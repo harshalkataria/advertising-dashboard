@@ -1,14 +1,17 @@
 # Advertising Dashboard (MVP)
 
 A minimal advertising campaign dashboard built with React 19 and Vite 6.  
-This single-page application allows users to authenticate, access a dashboard, and (in development) upload ad banners, define targeting, and view campaign submissions.
+This single-page application allows users to authenticate, access a dashboard, create and manage ad campaigns with targeting options, and view basic campaign metrics.
 
 ---
 
 ## 🚀 Features
 
 - 🔐 Authentication system with protected routes
-- 🖼 Dashboard interface (in development)
+- 📊 Dashboard interface with campaign management
+- 📝 Campaign creation with banner uploads and targeting options
+- 🌍 Location targeting across countries, regions, and cities
+- 📈 Basic campaign metrics (impressions, clicks, CTR)
 - 📱 Modern responsive design with Tailwind CSS
 - 🚀 React 19 with latest hooks and patterns
 
@@ -89,14 +92,17 @@ This project is currently in active development with the following components im
 - Authentication system
 - Basic routing structure
 - Login interface
-- Dashboard shell
+- Dashboard with campaign cards
+- Campaign creation functionality
+- Banner upload and URL linking
+- Targeting options (location, age, interests)
+- Basic campaign metrics display
 
 Upcoming features:
 
-- Campaign creation interface
-- Ad banner upload functionality
-- Campaign analytics
-- Targeting options
+- Campaign analytics enhancement
+- Campaign performance reporting
+- Admin user management
 
 ---
 
