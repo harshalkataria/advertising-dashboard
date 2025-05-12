@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
 import LocationSelector from './LocationSelector';
 
 const CampaignForm = () => {
@@ -66,7 +67,7 @@ const CampaignForm = () => {
       
       // Create campaign object
       const newCampaign = {
-        id: Date.now().toString(), // Simple unique ID
+        id: uuid(), // Using UUID v4 for robust unique ID generation
         name: campaignName,
         bannerType,
         bannerUrl: bannerType === 'url' ? bannerUrl : '',
