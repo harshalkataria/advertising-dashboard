@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import CampaignCreatePage from './pages/CampaignCreatePage';
 
 function App() {
   return (
@@ -18,6 +19,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/campaigns/create" 
+            element={
+              <ProtectedRoute>
+                <CampaignCreatePage />
               </ProtectedRoute>
             } 
           />
