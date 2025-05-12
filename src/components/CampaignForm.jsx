@@ -284,7 +284,7 @@ const CampaignForm = () => {
                 type="text"
                 value={interestInput}
                 onChange={(e) => setInterestInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddInterest())}
+                onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddInterest())}
                 className="flex-grow px-3 py-2 border border-gray-300 rounded-l-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="e.g., Technology, Sports, Fashion"
               />
