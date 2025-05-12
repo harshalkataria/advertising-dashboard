@@ -9,10 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Planned
 
-- Campaign creation interface
+- Campaign analytics enhancement
+- Campaign performance reporting
+- Admin user management
+
+## [0.2.0] - 2024-10-15
+
+### Added
+
+- Campaign creation interface with comprehensive form
 - Ad banner upload functionality
-- Campaign analytics
-- Targeting options
+- Location targeting with global geographical hierarchy
+- Interest targeting capabilities
+- Campaign management (view, delete)
+- Basic campaign metrics display (impressions, clicks, CTR)
+- Campaign cards with responsive layout
 
 ## [0.1.0] - 2024-10-01
 

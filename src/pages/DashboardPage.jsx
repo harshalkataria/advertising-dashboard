@@ -1,17 +1,41 @@
 import { useAuth } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 // Dashboard page component
 const DashboardPage = () => {
   const { user, logout } = useAuth();
   const [campaigns, setCampaigns] = useState([]);
+  const navigate = useNavigate();
 
   // Load campaigns from localStorage
   useEffect(() => {
     const storedCampaigns = JSON.parse(localStorage.getItem('campaigns') || '[]');
     setCampaigns(storedCampaigns);
   }, []);
+
+  // Handle campaign deletion
+  const handleDeleteCampaign = (campaignId) => {
+    // Show confirmation dialog
+    if (window.confirm('Are you sure you want to delete this campaign?')) {
+      // Filter out the campaign to delete
+      const updatedCampaigns = campaigns.filter(campaign => campaign.id !== campaignId);
+      
+      // Update state and localStorage
+      setCampaigns(updatedCampaigns);
+      localStorage.setItem('campaigns', JSON.stringify(updatedCampaigns));
+    }
+  };
+
+  // Handle campaign edit
+  const handleEditCampaign = (campaignId) => {
+    // In a full implementation, you would navigate to an edit page with the campaign ID
+    // For now, we'll just alert that this feature is coming soon
+    alert('Edit functionality coming soon!');
+    
+    // Future implementation would be:
+    // navigate(`/campaigns/edit/${campaignId}`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -35,7 +59,7 @@ const DashboardPage = () => {
           <h2 className="text-xl font-semibold">Your Campaigns</h2>
           <Link 
             to="/campaigns/create" 
-            className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700"
+            className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 transition-colors duration-200"
           >
             Create Campaign
           </Link>
@@ -50,7 +74,10 @@ const DashboardPage = () => {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {campaigns.map(campaign => (
-              <div key={campaign.id} className="bg-white shadow rounded-lg overflow-hidden">
+              <div 
+                key={campaign.id} 
+                className="bg-white shadow rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-200 transform hover:-translate-y-1 transition-transform duration-200 flex flex-col h-full"
+              >
                 <div className="p-4 border-b">
                   <h3 className="font-semibold text-lg">{campaign.name}</h3>
                   <span className={`inline-block px-2 py-1 text-xs rounded-full ${
@@ -60,17 +87,26 @@ const DashboardPage = () => {
                   </span>
                 </div>
                 
-                {campaign.bannerImageData && (
-                  <div className="h-40 overflow-hidden">
+                {/* Banner Preview */}
+                <div className="h-40 overflow-hidden bg-gray-100 flex items-center justify-center">
+                  {campaign.bannerImageData ? (
                     <img 
                       src={campaign.bannerImageData} 
                       alt={campaign.name} 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
-                  </div>
-                )}
+                  ) : campaign.bannerUrl ? (
+                    <img 
+                      src={campaign.bannerUrl} 
+                      alt={campaign.name} 
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <div className="text-gray-400 text-sm">No banner image</div>
+                  )}
+                </div>
                 
-                <div className="p-4">
+                <div className="p-4 flex-grow">
                   <div className="text-sm text-gray-600 mb-2">
                     <div>Location: {campaign.targeting.location || 'Any'}</div>
                     <div>Age: {campaign.targeting.ageRange.min}-{campaign.targeting.ageRange.max}</div>
@@ -101,11 +137,17 @@ const DashboardPage = () => {
                   </div>
                 </div>
                 
-                <div className="p-4 border-t bg-gray-50 flex justify-end space-x-2">
-                  <button className="px-3 py-1 text-xs text-indigo-600 hover:text-indigo-800">
+                <div className="p-4 border-t bg-gray-50 flex justify-end space-x-2 mt-auto">
+                  <button 
+                    onClick={() => handleEditCampaign(campaign.id)}
+                    className="px-3 py-1 text-xs bg-indigo-50 text-indigo-600 rounded hover:bg-indigo-100 hover:text-indigo-800 transition-colors duration-200"
+                  >
                     Edit
                   </button>
-                  <button className="px-3 py-1 text-xs text-red-600 hover:text-red-800">
+                  <button 
+                    onClick={() => handleDeleteCampaign(campaign.id)}
+                    className="px-3 py-1 text-xs bg-red-50 text-red-600 rounded hover:bg-red-100 hover:text-red-800 transition-colors duration-200"
+                  >
                     Delete
                   </button>
                 </div>
