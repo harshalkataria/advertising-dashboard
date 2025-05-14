@@ -7,11 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Campaign status toggle functionality (pause/resume)
+- Enhanced campaign cards with detailed metrics display
+- Campaign Edit functionality
+- Responsive grid layout for campaign management
+
+### Changed
+
+- Improved location targeting with hierarchical selection
+- Enhanced user interface for campaign management
+- Optimized form validation for campaign creation
+
+### Fixed
+
+- Image preview handling in campaign form
+- Campaign metrics calculation accuracy
+- UI consistency across different screen sizes
+
 ### Planned
 
 - Campaign analytics enhancement
 - Campaign performance reporting
 - Admin user management
+
+---
 
 ## [0.2.0] - 2025-05-12
 

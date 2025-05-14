@@ -9,9 +9,9 @@ This single-page application allows users to authenticate, access a dashboard, c
 
 - 🔐 Authentication system with protected routes
 - 📊 Dashboard interface with campaign management
-- 📝 Campaign creation with banner uploads and targeting options
-- 🌍 Location targeting across countries, regions, and cities
-- 📈 Basic campaign metrics (impressions, clicks, CTR)
+- 📝 Campaign creation with targeting options
+- 🔄 Campaign editing capabilities
+- 🌍 Location targeting with the LocationSelector component
 - 📱 Modern responsive design with Tailwind CSS
 - 🚀 React 19 with latest hooks and patterns
 
@@ -25,6 +25,7 @@ This single-page application allows users to authenticate, access a dashboard, c
 - **State Management:** React Context API
 - **Persistence:** localStorage (no backend)
 - **Linting:** ESLint 9
+- **Unique IDs:** UUID v11
 
 ---
 
@@ -48,11 +49,15 @@ advertising-dashboard/
 ├── public/                 # Static assets
 ├── src/
 │   ├── components/         # Reusable UI components
-│   │   ├── LoginForm.jsx    # Authentication form
-│   │   └── ProtectedRoute.jsx # Route protection component
+│   │   ├── CampaignForm.jsx    # Form for creating/editing campaigns
+│   │   ├── LocationSelector.jsx # Location targeting component
+│   │   ├── LoginForm.jsx       # Authentication form
+│   │   └── ProtectedRoute.jsx  # Route protection component
 │   ├── pages/              # App pages
-│   │   ├── LoginPage.jsx    # Login page
-│   │   └── DashboardPage.jsx # Main dashboard
+│   │   ├── LoginPage.jsx         # Login page
+│   │   ├── DashboardPage.jsx     # Main dashboard
+│   │   ├── CampaignCreatePage.jsx # Campaign creation page
+│   │   └── CampaignEditPage.jsx   # Campaign editing page
 │   ├── context/            # App-wide state
 │   │   └── AuthContext.jsx  # Authentication context
 │   ├── utils/              # Helper functions
@@ -92,11 +97,11 @@ This project is currently in active development with the following components im
 - Authentication system
 - Basic routing structure
 - Login interface
-- Dashboard with campaign cards
+- Dashboard with campaign management
 - Campaign creation functionality
-- Banner upload and URL linking
-- Targeting options (location, age, interests)
-- Basic campaign metrics display
+- Campaign editing functionality
+- Advanced location targeting
+- Protected routes for authenticated users
 
 Upcoming features:
 
@@ -113,3 +118,4 @@ Upcoming features:
 - Tailwind CSS
 - Vite 6
 - ESLint 9
+- UUID 11

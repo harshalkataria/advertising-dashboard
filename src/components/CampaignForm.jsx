@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import LocationSelector from './LocationSelector';
 
-const CampaignForm = () => {
+const CampaignForm = ({ initialData = null, isEditing = false }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -21,6 +21,25 @@ const CampaignForm = () => {
   const [location, setLocation] = useState('');
   const [interests, setInterests] = useState([]);
   const [interestInput, setInterestInput] = useState('');
+
+  // Initialize form with existing data if editing
+  useEffect(() => {
+    if (initialData) {
+      setCampaignName(initialData.name);
+      setBannerType(initialData.bannerType);
+      setBannerUrl(initialData.bannerUrl || '');
+      
+      if (initialData.bannerImageData) {
+        setBannerPreview(initialData.bannerImageData);
+      } else if (initialData.bannerUrl) {
+        setBannerPreview(initialData.bannerUrl);
+      }
+      
+      setAgeRange(initialData.targeting.ageRange);
+      setLocation(initialData.targeting.location || '');
+      setInterests(initialData.targeting.interests || []);
+    }
+  }, [initialData]);
 
   // Handle image upload
   const handleImageChange = (e) => {
@@ -57,7 +76,7 @@ const CampaignForm = () => {
         throw new Error('Campaign name is required');
       }
       
-      if (bannerType === 'image' && !bannerImage) {
+      if (bannerType === 'image' && !bannerImage && !bannerPreview) {
         throw new Error('Please upload a banner image');
       }
       
@@ -65,46 +84,92 @@ const CampaignForm = () => {
         throw new Error('Please provide a banner URL');
       }
       
-      // Create campaign object
-      const newCampaign = {
-        id: uuid(), // Using UUID v4 for robust unique ID generation
-        name: campaignName,
-        bannerType,
-        bannerUrl: bannerType === 'url' ? bannerUrl : '',
-        bannerImageData: bannerType === 'image' && bannerImage ? await readFileAsDataURL(bannerImage) : '',
-        targeting: {
-          ageRange,
-          location,
-          interests
-        },
-        status: 'active',
-        createdAt: new Date().toISOString(),
-        metrics: {
-          impressions: 0,
-          clicks: 0,
-          conversions: 0
-        }
-      };
-      
       // Get existing campaigns from localStorage
       const existingCampaigns = JSON.parse(localStorage.getItem('campaigns') || '[]');
       
-      // Add new campaign
-      const updatedCampaigns = [...existingCampaigns, newCampaign];
-      
-      // Save to localStorage
-      localStorage.setItem('campaigns', JSON.stringify(updatedCampaigns));
-      
-      // Show success message
-      setSuccess(true);
-      
-      // Reset form after 2 seconds and redirect
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 2000);
+      if (isEditing) {
+        // Process image if needed
+        let imageData = '';
+        if (bannerType === 'image' && bannerImage) {
+          imageData = await readFileAsDataURL(bannerImage);
+        } else if (bannerType === 'image' && initialData) {
+          imageData = initialData.bannerImageData || '';
+        }
+        
+        // Update existing campaign
+        const updatedCampaigns = existingCampaigns.map(campaign => {
+          if (campaign.id === initialData.id) {
+            return {
+              ...campaign,
+              name: campaignName,
+              bannerType,
+              bannerUrl: bannerType === 'url' ? bannerUrl : '',
+              bannerImageData: imageData,
+              targeting: {
+                ageRange,
+                location,
+                interests
+              }
+            };
+          }
+          return campaign;
+        });
+        
+        // Save to localStorage
+        localStorage.setItem('campaigns', JSON.stringify(updatedCampaigns));
+        
+        // Show success message
+        setSuccess(true);
+        
+        // Reset form after 2 seconds and redirect
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
+      } else {
+        // Process image for new campaign
+        let imageData = '';
+        if (bannerType === 'image' && bannerImage) {
+          imageData = await readFileAsDataURL(bannerImage);
+        }
+        
+        // Create new campaign
+        const newCampaign = {
+          id: uuid(),
+          name: campaignName,
+          bannerType,
+          bannerUrl: bannerType === 'url' ? bannerUrl : '',
+          bannerImageData: imageData,
+          targeting: {
+            ageRange,
+            location,
+            interests
+          },
+          status: 'active',
+          createdAt: new Date().toISOString(),
+          metrics: {
+            impressions: 0,
+            clicks: 0,
+            conversions: 0
+          }
+        };
+        
+        // Add new campaign
+        const updatedCampaigns = [...existingCampaigns, newCampaign];
+        
+        // Save to localStorage
+        localStorage.setItem('campaigns', JSON.stringify(updatedCampaigns));
+        
+        // Show success message
+        setSuccess(true);
+        
+        // Reset form after 2 seconds and redirect
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
+      }
       
     } catch (err) {
-      setError(err.message || 'Failed to create campaign');
+      setError(err.message || 'Failed to save campaign');
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +187,9 @@ const CampaignForm = () => {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Create New Campaign</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">
+        {isEditing ? 'Edit Campaign' : 'Create New Campaign'}
+      </h2>
       
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
@@ -132,7 +199,9 @@ const CampaignForm = () => {
       
       {success && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4" role="alert">
-          <span className="block sm:inline">Campaign created successfully! Redirecting...</span>
+          <span className="block sm:inline">
+            {isEditing ? 'Campaign updated successfully!' : 'Campaign created successfully!'} Redirecting...
+          </span>
         </div>
       )}
       
@@ -324,10 +393,19 @@ const CampaignForm = () => {
         <div className="pt-4">
           <button
             type="submit"
-            disabled={isLoading}
-            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg disabled:opacity-50"
+            disabled={isLoading || success}
+            className={`w-full py-2 px-4 font-semibold rounded-lg transition-colors duration-200 ${
+              isLoading || success
+                ? 'bg-indigo-400 text-white cursor-not-allowed opacity-70'
+                : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+            }`}
           >
-            {isLoading ? 'Creating Campaign...' : 'Create Campaign'}
+            {isLoading 
+              ? (isEditing ? 'Updating Campaign...' : 'Creating Campaign...') 
+              : success
+                ? (isEditing ? 'Campaign Updated!' : 'Campaign Created!')
+                : (isEditing ? 'Update Campaign' : 'Create Campaign')
+            }
           </button>
         </div>
       </form>

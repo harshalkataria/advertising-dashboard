@@ -29,12 +29,25 @@ const DashboardPage = () => {
 
   // Handle campaign edit
   const handleEditCampaign = (campaignId) => {
-    // In a full implementation, you would navigate to an edit page with the campaign ID
-    // For now, we'll just alert that this feature is coming soon
-    alert('Edit functionality coming soon!');
+    // Navigate to the edit page with the campaign ID
+    navigate(`/campaigns/edit/${campaignId}`);
+  };
+
+  // Add this function after handleEditCampaign
+  const handleToggleStatus = (campaignId) => {
+    // Find the campaign to update
+    const updatedCampaigns = campaigns.map(campaign => {
+      if (campaign.id === campaignId) {
+        // Toggle status between 'active' and 'paused'
+        const newStatus = campaign.status === 'active' ? 'paused' : 'active';
+        return { ...campaign, status: newStatus };
+      }
+      return campaign;
+    });
     
-    // Future implementation would be:
-    // navigate(`/campaigns/edit/${campaignId}`);
+    // Update state and localStorage
+    setCampaigns(updatedCampaigns);
+    localStorage.setItem('campaigns', JSON.stringify(updatedCampaigns));
   };
 
   return (
@@ -80,11 +93,20 @@ const DashboardPage = () => {
               >
                 <div className="p-4 border-b">
                   <h3 className="font-semibold text-lg">{campaign.name}</h3>
-                  <span className={`inline-block px-2 py-1 text-xs rounded-full ${
-                    campaign.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {campaign.status}
-                  </span>
+                  <div className="flex justify-between items-center mt-1">
+                    <span className={`inline-block px-2 py-1 text-xs rounded-full ${
+                      campaign.status === 'active' 
+                        ? 'bg-green-100 text-green-800' 
+                        : campaign.status === 'paused' 
+                          ? 'bg-yellow-100 text-yellow-800' 
+                          : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {campaign.status}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {new Date(campaign.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
                 </div>
                 
                 {/* Banner Preview */}
@@ -138,6 +160,16 @@ const DashboardPage = () => {
                 </div>
                 
                 <div className="p-4 border-t bg-gray-50 flex justify-end space-x-2 mt-auto">
+                  <button 
+                    onClick={() => handleToggleStatus(campaign.id)}
+                    className={`px-3 py-1 text-xs rounded transition-colors duration-200 ${
+                      campaign.status === 'active' 
+                        ? 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100 hover:text-yellow-800' 
+                        : 'bg-green-50 text-green-600 hover:bg-green-100 hover:text-green-800'
+                    }`}
+                  >
+                    {campaign.status === 'active' ? 'Pause' : 'Resume'}
+                  </button>
                   <button 
                     onClick={() => handleEditCampaign(campaign.id)}
                     className="px-3 py-1 text-xs bg-indigo-50 text-indigo-600 rounded hover:bg-indigo-100 hover:text-indigo-800 transition-colors duration-200"

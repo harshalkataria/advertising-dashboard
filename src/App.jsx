@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import CampaignCreatePage from './pages/CampaignCreatePage';
+import CampaignEditPage from './pages/CampaignEditPage';
 
 function App() {
   return (
@@ -28,6 +29,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <CampaignCreatePage />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/campaigns/edit/:id" 
+            element={
+              <ProtectedRoute>
+                <CampaignEditPage />
               </ProtectedRoute>
             } 
           />
